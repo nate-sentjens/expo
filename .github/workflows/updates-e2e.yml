@@ -63,7 +63,23 @@ jobs:
         run: expo-cli init updates-e2e --yes
       - name: Add yarn resolutions for local dependencies
         working-directory: ../updates-e2e
-        run: 'node -e "console.log(JSON.stringify({...require(''./package.json''), resolutions: {''expo-eas-client-id'': ''file:../expo/packages/expo-eas-client-id'', ''expo-modules-core'': ''file:../expo/packages/expo-modules-core'', ''expo-json-utils'': ''file:../expo/packages/expo-json-utils'', ''expo-manifests'': ''file:../expo/packages/expo-manifests'', ''expo-structured-headers'': ''file:../expo/packages/expo-structured-headers'', ''expo-updates-interface'': ''file:../expo/packages/expo-updates-interface''}}, null, 2))" > new-package.json && mv new-package.json package.json'
+        run: |
+          # A jq filter to add a "resolutions" field
+          JQ_FILTER=$(cat << EOF
+            . + {
+              resolutions: {
+                "expo-eas-client-id": "file:../expo/packages/expo-eas-client-id",
+                "expo-json-utils": "file:../expo/packages/expo-json-utils",
+                "expo-manifests": "file:../expo/packages/expo-manifests",
+                "expo-modules-core": "file:../expo/packages/expo-modules-core",
+                "expo-structured-headers": "file:../expo/packages/expo-structured-headers",
+                "expo-updates-interface": "file:../expo/packages/expo-updates-interface"
+              }
+            }
+          EOF
+          )
+          jq "$JQ_FILTER" < package.json > new-package.json
+          mv new-package.json package.json
       - name: Add local expo-updates and expo
         working-directory: ../updates-e2e
         run: yarn add file:../expo/packages/expo-updates file:../expo/packages/expo
