@@ -54,15 +54,16 @@ class ClipboardModuleTest {
   //   assertEquals("album dumbledore", readResult)
   // }
 
-  @Test
-  fun `should get empty string when clipboard is empty`() = withClipboardMock {
-    // This requires API 28
-    clipboardManager.clearPrimaryClip()
-
-    val content = module.getStringAsync()
-
-    assertTrue("Clipboard content should be empty", content.isEmpty())
-  }
+  // TODO (barthap): Uncomment this once fixed race condition "React Application Context is null"
+  // @Test
+  // fun `should get empty string when clipboard is empty`() = withClipboardMock {
+  //   // This requires API 28
+  //   clipboardManager.clearPrimaryClip()
+  //
+  //   val content = module.getStringAsync()
+  //
+  //   assertTrue("Clipboard content should be empty", content.isEmpty())
+  // }
 
   @Test
   fun `getStringAsync should support HTML`() = withClipboardMock {
